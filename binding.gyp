@@ -7,7 +7,7 @@
         'src/dablooms.cc'
       ],
       'conditions': [
-        ['OS=="linux"', {
+        ['OS!="win"', {
           'link_settings': {
             'libraries': [
               '-ldablooms',
