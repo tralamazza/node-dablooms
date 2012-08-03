@@ -1,5 +1,5 @@
 {
-  "name": "node-dablooms",
+  "name": "dablooms",
   "version": "0.0.1",
   "description": "dablooms wrapper",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "devDependencies": {
     "node-gyp": "*"
   },
-  "repository": "",
+  "repository": "git://github.com/tralamazza/node-dablooms.git",
   "author": "Daniel Tralamazza <tralamazza@gmail.com>",
   "license": "MIT"
 }
