@@ -1,7 +1,12 @@
 node-dablooms
 =============
 
-### A nodejs [Dablooms](http://github.com/bitly/dablooms) wrapper
+A nodejs [dablooms](http://github.com/bitly/dablooms) module.
+
+### Install
+Make sure you have [dablooms](http://github.com/bitly/dablooms) installed (```make && make install```).
+
+    npm install dablooms
 
 ### Example
 
@@ -9,6 +14,11 @@ node-dablooms
     var bloom = new dablooms.ScalingBloom(1000, 0.5, '/tmp/bloom.bin', 0);
     bloom.add('bar', 1);
     bloom.check('bar');
+
+### API
+
+node-dablooms follows the C api closely, both CountingBloom and ScalingBloom are supported.
+
 
 License
 -------
