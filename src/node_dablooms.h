@@ -24,6 +24,10 @@ class NodeCountingBloom : public node::ObjectWrap {
     static Handle<Value> Remove(const Arguments& args);
     static Handle<Value> Check(const Arguments& args);
 
+    static Handle<Value> GetNumBytes(Local<String> property, const AccessorInfo& info);
+    static Handle<Value> GetCapacity(Local<String> property, const AccessorInfo& info);
+    static Handle<Value> GetErrorRate(Local<String> property, const AccessorInfo& info);
+
     counting_bloom_t* _bloom;
 };
 
@@ -42,6 +46,11 @@ class NodeScalingBloom : public node::ObjectWrap {
     static Handle<Value> Remove(const Arguments& args);
     static Handle<Value> Check(const Arguments& args);
     static Handle<Value> Flush(const Arguments& args);
+
+    static Handle<Value> GetNumBytes(Local<String> property, const AccessorInfo& info);
+    static Handle<Value> GetCapacity(Local<String> property, const AccessorInfo& info);
+    static Handle<Value> GetErrorRate(Local<String> property, const AccessorInfo& info);
+    static Handle<Value> GetNumBlooms(Local<String> property, const AccessorInfo& info);
 
     scaling_bloom_t* _bloom;
 };
