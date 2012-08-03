@@ -1,8 +1,4 @@
 #define BUILDING_NODE_EXTENSION
-
-#include <v8.h>
-#include <node.h>
-#include <dablooms.h>
 #include "node_dablooms.h"
 
 using namespace v8;
@@ -10,12 +6,14 @@ using namespace v8;
 /* NodeCountingBloom */
 void NodeCountingBloom::Init(Handle<Object> target) {
   HandleScope scope;
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(NewInstance);
+  tpl->SetClassName(String::NewSymbol("CountingBloom"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(tpl, "add", Add);
   NODE_SET_PROTOTYPE_METHOD(tpl, "remove", Remove);
   NODE_SET_PROTOTYPE_METHOD(tpl, "check", Check);
-  target->Set(String::NewSymbol("countingBloom"), tpl->GetFunction());
+  Persistent<Function> constructor = Persistent<Function>::New(tpl->GetFunction());
+  target->Set(String::NewSymbol("CountingBloom"), constructor);
 }
 
 NodeCountingBloom::NodeCountingBloom(unsigned int capacity, double error_rate, const char *filename, bool from_file) : node::ObjectWrap() {
@@ -29,7 +27,8 @@ NodeCountingBloom::~NodeCountingBloom() {
   _bloom = NULL;
 }
 
-Handle<Value> NodeCountingBloom::New(const Arguments& args) {
+Handle<Value> NodeCountingBloom::NewInstance(const Arguments& args) {
+  HandleScope scope;
   NodeCountingBloom* obj = new NodeCountingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->BooleanValue());
   obj->Wrap(args.This());
   return args.This();
@@ -77,13 +76,15 @@ Handle<Value> NodeCountingBloom::Check(const Arguments& args) {
 /* NodeScalingBloom */
 void NodeScalingBloom::Init(Handle<Object> target) {
   HandleScope scope;
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(NewInstance);
+  tpl->SetClassName(String::NewSymbol("ScalingBloom"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   NODE_SET_PROTOTYPE_METHOD(tpl, "add", Add);
   NODE_SET_PROTOTYPE_METHOD(tpl, "remove", Remove);
   NODE_SET_PROTOTYPE_METHOD(tpl, "check", Check);
   NODE_SET_PROTOTYPE_METHOD(tpl, "flush", Flush);
-  target->Set(String::NewSymbol("scalingBloom"), tpl->GetFunction());
+  Persistent<Function> constructor = Persistent<Function>::New(tpl->GetFunction());
+  target->Set(String::NewSymbol("ScalingBloom"), constructor);
 }
 
 NodeScalingBloom::NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, uint32_t id) : node::ObjectWrap() {
@@ -99,7 +100,8 @@ NodeScalingBloom::~NodeScalingBloom() {
   _bloom = NULL;
 }
 
-Handle<Value> NodeScalingBloom::New(const Arguments& args) {
+Handle<Value> NodeScalingBloom::NewInstance(const Arguments& args) {
+  HandleScope scope;
   NodeScalingBloom* obj;
   if (args.Length() > 3 && args[3]->IsUint32())
     obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->Uint32Value());

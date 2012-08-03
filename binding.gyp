@@ -8,15 +8,19 @@
       ],
       'conditions': [
         ['OS=="linux"', {
+          'link_settings': {
+            'libraries': [
+              '-ldablooms',
+            ],
+          },
           'include_dirs': [
             '/usr/local/include'
           ],
           'ldflags': [
-            '-L /usr/local/lib',
-            '-l:libdablooms.a',
-          ],
-        }],
-      ],
+            '-L /usr/local/lib'
+          ]
+        }]
+      ]
     }
   ]
 }

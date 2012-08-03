@@ -3,7 +3,10 @@
 
 #include <v8.h>
 #include <node.h>
+
+extern "C" {
 #include <dablooms.h>
+}
 
 using namespace v8;
 
@@ -15,7 +18,7 @@ class NodeCountingBloom : public node::ObjectWrap {
     NodeCountingBloom(uint32_t capacity, double error_rate, const char* filename, bool from_file);
     ~NodeCountingBloom();
 
-    static Handle<Value> New(const Arguments& args);
+    static Handle<Value> NewInstance(const Arguments& args);
 
     static Handle<Value> Add(const Arguments& args);
     static Handle<Value> Remove(const Arguments& args);
@@ -33,7 +36,7 @@ class NodeScalingBloom : public node::ObjectWrap {
     NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename);
     ~NodeScalingBloom();
 
-    static Handle<Value> New(const Arguments& args);
+    static Handle<Value> NewInstance(const Arguments& args);
 
     static Handle<Value> Add(const Arguments& args);
     static Handle<Value> Remove(const Arguments& args);
