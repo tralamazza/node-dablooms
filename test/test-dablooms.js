@@ -9,4 +9,4 @@ assert.equal(bloom.capacity, 1000);
 assert.equal(bloom.remove('foo', 2), 1);
 assert.equal(bloom.check('foo'), 0);
 assert.equal(bloom.flush(), 0);
-console.log('size in bytes:', bloom.num_bytes);
+assert(bloom.num_bytes > 0);
