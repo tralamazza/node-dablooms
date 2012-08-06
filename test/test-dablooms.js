@@ -5,7 +5,7 @@ describe('Dablooms', function() {
   describe('ScalingBloom', function() {
     var bloom = null;
     before(function() {
-      bloom = new dablooms.ScalingBloom(1000, 0.05, '/tmp/bloom.bin', 0);
+      bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin', 0);
     });
     it('should have a valid constructor', function() {
       assert(bloom);
