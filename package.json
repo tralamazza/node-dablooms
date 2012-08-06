@@ -4,10 +4,12 @@
   "description": "dablooms wrapper",
   "main": "index.js",
   "scripts": {
+    "test": "./node_modules/.bin/mocha -R spec",
     "build": "./node_modules/.bin/node-gyp rebuild"
   },
   "devDependencies": {
-    "node-gyp": "*"
+    "node-gyp": "*",
+    "mocha": "*"
   },
   "repository": "git://github.com/tralamazza/node-dablooms.git",
   "author": "Daniel Tralamazza <tralamazza@gmail.com>",
