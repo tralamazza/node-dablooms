@@ -3,6 +3,17 @@
 
 using namespace v8;
 
+Handle<Value> Version(Local<String> property, const AccessorInfo& info) {
+  HandleScope scope;
+  return scope.Close(String::New(dablooms_version()));
+}
+
+void NodeDabloomsInit(Handle<Object> target) {
+  target->SetAccessor(String::NewSymbol("version"), Version);
+  NodeCountingBloom::Init(target);
+  NodeScalingBloom::Init(target);
+}
+
 /* NodeCountingBloom */
 void NodeCountingBloom::Init(Handle<Object> target) {
   HandleScope scope;

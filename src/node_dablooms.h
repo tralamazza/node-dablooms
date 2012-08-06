@@ -10,6 +10,8 @@ extern "C" {
 
 using namespace v8;
 
+void NodeDabloomsInit(Handle<Object> target);
+
 class NodeCountingBloom : public node::ObjectWrap {
   public:
     static void Init(Handle<Object> target);
