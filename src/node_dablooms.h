@@ -17,7 +17,7 @@ class NodeCountingBloom : public node::ObjectWrap {
     static void Init(Handle<Object> target);
 
   private:
-    NodeCountingBloom(uint32_t capacity, double error_rate, const char* filename, bool from_file);
+    NodeCountingBloom(uint32_t capacity, double error_rate, const char* filename);
     ~NodeCountingBloom();
 
     static Handle<Value> NewInstance(const Arguments& args);

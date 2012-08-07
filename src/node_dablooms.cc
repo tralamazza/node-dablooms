@@ -30,10 +30,8 @@ void NodeCountingBloom::Init(Handle<Object> target) {
   target->Set(String::NewSymbol("CountingBloom"), constructor);
 }
 
-NodeCountingBloom::NodeCountingBloom(unsigned int capacity, double error_rate, const char *filename, bool from_file) : node::ObjectWrap() {
-  _bloom = from_file ?
-    new_counting_bloom_from_file(capacity, error_rate, filename) :
-    new_counting_bloom(capacity, error_rate, filename);
+NodeCountingBloom::NodeCountingBloom(unsigned int capacity, double error_rate, const char *filename) : node::ObjectWrap() {
+  _bloom = new_counting_bloom(capacity, error_rate, filename);
 }
 
 NodeCountingBloom::~NodeCountingBloom() {
@@ -43,7 +41,7 @@ NodeCountingBloom::~NodeCountingBloom() {
 
 Handle<Value> NodeCountingBloom::NewInstance(const Arguments& args) {
   HandleScope scope;
-  NodeCountingBloom* obj = new NodeCountingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->BooleanValue());
+  NodeCountingBloom* obj = new NodeCountingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]));
   obj->Wrap(args.This());
   return args.This();
 }
