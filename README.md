@@ -1,4 +1,4 @@
-node-dablooms
+node-dablooms [![Build Status](https://secure.travis-ci.org/tralamazza/node-dablooms.png)](http://travis-ci.org/tralamazza/node-dablooms])
 =============
 
 A nodejs [dablooms](http://github.com/bitly/dablooms) module.
@@ -11,7 +11,7 @@ Make sure you have [dablooms](http://github.com/bitly/dablooms) installed (```ma
 ### Example
 
     var dablooms = require('dablooms');
-    var bloom = new dablooms.ScalingBloom(1000, 0.5, '/tmp/bloom.bin', 0);
+    var bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin', 0);
     bloom.add('bar', 1);
     bloom.check('bar');
 
