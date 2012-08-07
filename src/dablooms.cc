@@ -4,8 +4,7 @@
 using namespace v8;
 
 extern "C" void init(Handle<Object> target) {
-  NodeCountingBloom::Init(target);
-  NodeScalingBloom::Init(target);
+  NodeDabloomsInit(target);
 }
 
 NODE_MODULE(dablooms, init)
