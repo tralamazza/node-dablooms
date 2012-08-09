@@ -4,7 +4,7 @@ node-dablooms [![Build Status](https://secure.travis-ci.org/tralamazza/node-dabl
 A nodejs [dablooms](http://github.com/bitly/dablooms) module.
 
 ### Install
-Make sure you have [dablooms](http://github.com/bitly/dablooms) installed (```make && make install```).
+Make sure you have [dablooms](http://github.com/bitly/dablooms) installed (```make && make install```, you might need to call ```ldconfig```).
 
     npm install dablooms
 
