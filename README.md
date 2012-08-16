@@ -11,7 +11,7 @@ Make sure you have [dablooms](http://github.com/bitly/dablooms) installed (```ma
 ### Example
 
     var dablooms = require('dablooms');
-    var bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin', 0);
+    var bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin');
     bloom.add('bar', 1);
     bloom.check('bar');
 
