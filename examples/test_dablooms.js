@@ -22,8 +22,8 @@ function test_scale(filename) {
   });
   i = 0;
   words.forEach(function(word) {
-    if (i % 5 === 0)
-      bloom.remove(word, i++);
+    if (i++ % 5 === 0)
+      bloom.remove(word, i);
   });
   bloom.flush();
 
