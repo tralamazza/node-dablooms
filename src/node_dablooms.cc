@@ -1,5 +1,6 @@
 #define BUILDING_NODE_EXTENSION
 #include "node_dablooms.h"
+#include <cstring>
 
 using namespace v8;
 
@@ -55,7 +56,8 @@ Handle<Value> NodeCountingBloom::Add(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  int ret = counting_bloom_add(obj->_bloom, *String::AsciiValue(args[0]));
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = counting_bloom_add(obj->_bloom, str, strlen(str));
   return scope.Close(Integer::New(ret));
 }
 
@@ -68,7 +70,8 @@ Handle<Value> NodeCountingBloom::Remove(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  int ret = counting_bloom_remove(obj->_bloom, *String::AsciiValue(args[0]));
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = counting_bloom_remove(obj->_bloom, str, strlen(str));
   return scope.Close(Integer::New(ret));
 }
 
@@ -81,7 +84,8 @@ Handle<Value> NodeCountingBloom::Check(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  int ret = counting_bloom_check(obj->_bloom, *String::AsciiValue(args[0]));
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = counting_bloom_check(obj->_bloom, str, strlen(str));
   return scope.Close(Integer::New(ret));
 }
 
@@ -124,12 +128,10 @@ void NodeScalingBloom::Init(Handle<Object> target) {
   target->Set(String::NewSymbol("ScalingBloom"), constructor);
 }
 
-NodeScalingBloom::NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, uint32_t id) : node::ObjectWrap() {
-  _bloom = new_scaling_bloom(capacity, error_rate, filename, id);
-}
-
-NodeScalingBloom::NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename) : node::ObjectWrap() {
-  _bloom = new_scaling_bloom_from_file(capacity, error_rate, filename);
+NodeScalingBloom::NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, bool from_file) : node::ObjectWrap() {
+  _bloom = from_file ?
+    new_scaling_bloom_from_file(capacity, error_rate, filename) :
+    new_scaling_bloom(capacity, error_rate, filename);
 }
 
 NodeScalingBloom::~NodeScalingBloom() {
@@ -140,10 +142,10 @@ NodeScalingBloom::~NodeScalingBloom() {
 Handle<Value> NodeScalingBloom::NewInstance(const Arguments& args) {
   HandleScope scope;
   NodeScalingBloom* obj;
-  if (args.Length() > 3 && args[3]->IsUint32())
-    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->Uint32Value());
+  if (args.Length() > 3 && args[3]->IsBoolean())
+    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->BooleanValue());
   else
-    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]));
+    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), false);
   obj->Wrap(args.This());
   return args.This();
 }
@@ -159,7 +161,8 @@ Handle<Value> NodeScalingBloom::Add(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This());
-  int ret = scaling_bloom_add(obj->_bloom, *String::AsciiValue(args[0]), args[1]->Uint32Value());
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = scaling_bloom_add(obj->_bloom, str, strlen(str), args[1]->Uint32Value());
   return scope.Close(Integer::New(ret));
 }
 
@@ -174,7 +177,8 @@ Handle<Value> NodeScalingBloom::Remove(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This()); 
-  int ret = scaling_bloom_remove(obj->_bloom, *String::AsciiValue(args[0]), args[1]->Uint32Value());
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = scaling_bloom_remove(obj->_bloom, str, strlen(str), args[1]->Uint32Value());
   return scope.Close(Integer::New(ret));
 }
 
@@ -187,7 +191,8 @@ Handle<Value> NodeScalingBloom::Check(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This());
-  int ret = scaling_bloom_check(obj->_bloom, *String::AsciiValue(args[0]));
+  const char* str = *String::AsciiValue(args[0]);
+  int ret = scaling_bloom_check(obj->_bloom, str, strlen(str));
   return scope.Close(Integer::New(ret));
 }
 

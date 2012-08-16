@@ -38,8 +38,7 @@ class NodeScalingBloom : public node::ObjectWrap {
     static void Init(Handle<Object> target);
 
   private:
-    NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, uint32_t id);
-    NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename);
+    NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, bool from_file);
     ~NodeScalingBloom();
 
     static Handle<Value> NewInstance(const Arguments& args);
