@@ -1,3 +1,4 @@
+#define BUILDING_NODE_EXTENSION
 #ifndef NODE_DABLOOMS_H
 #define NODE_DABLOOMS_H
 
@@ -38,7 +39,7 @@ class NodeScalingBloom : public node::ObjectWrap {
     static void Init(Handle<Object> target);
 
   private:
-    NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, bool from_file);
+    NodeScalingBloom(uint32_t capacity, double error_rate, const char* filename, bool from_file);
     ~NodeScalingBloom();
 
     static Handle<Value> NewInstance(const Arguments& args);

@@ -18,16 +18,18 @@ describe('Dablooms', function() {
     });
     it('should add a value', function() {
       assert.equal(bloom.add('foo', 2), 1);
+      assert.equal(bloom.add('foo', 2), 1);
     });
     it('should check this value membership', function() {
-      assert.equal(bloom.check('foo', 2), 1);
-      assert.equal(bloom.check('bar', 2), 0); // false positive ???
+      assert.equal(bloom.check('foo'), 1);
+      assert.equal(bloom.check('bar'), 0); // false positive
     });
     it('should remove a value', function() {
       assert.equal(bloom.remove('foo', 2), 1);
+      assert.equal(bloom.remove('foo', 2), 1);
     });
     it('should check the removal', function() {
-      assert.equal(bloom.check('foo', 2), 0);
+      assert.equal(bloom.check('foo'), 0);
     });
     it('should have a size in bytes larger than zero', function() {
       assert(bloom.num_bytes > 0);

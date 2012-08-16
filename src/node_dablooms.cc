@@ -1,11 +1,11 @@
 #define BUILDING_NODE_EXTENSION
 #include "node_dablooms.h"
-#include <cstring>
 
 using namespace v8;
 
 Handle<Value> Version(Local<String> property, const AccessorInfo& info) {
   HandleScope scope;
+
   return scope.Close(String::New(dablooms_version()));
 }
 
@@ -18,6 +18,7 @@ void NodeDabloomsInit(Handle<Object> target) {
 /* NodeCountingBloom */
 void NodeCountingBloom::Init(Handle<Object> target) {
   HandleScope scope;
+
   Local<FunctionTemplate> tpl = FunctionTemplate::New(NewInstance);
   tpl->SetClassName(String::NewSymbol("CountingBloom"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -31,7 +32,7 @@ void NodeCountingBloom::Init(Handle<Object> target) {
   target->Set(String::NewSymbol("CountingBloom"), constructor);
 }
 
-NodeCountingBloom::NodeCountingBloom(unsigned int capacity, double error_rate, const char *filename) : node::ObjectWrap() {
+NodeCountingBloom::NodeCountingBloom(uint32_t capacity, double error_rate, const char *filename) : node::ObjectWrap() {
   _bloom = new_counting_bloom(capacity, error_rate, filename);
 }
 
@@ -42,7 +43,9 @@ NodeCountingBloom::~NodeCountingBloom() {
 
 Handle<Value> NodeCountingBloom::NewInstance(const Arguments& args) {
   HandleScope scope;
-  NodeCountingBloom* obj = new NodeCountingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]));
+
+  String::AsciiValue str(args[2]);
+  NodeCountingBloom* obj = new NodeCountingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *str);
   obj->Wrap(args.This());
   return args.This();
 }
@@ -56,8 +59,8 @@ Handle<Value> NodeCountingBloom::Add(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = counting_bloom_add(obj->_bloom, str, strlen(str));
+  String::AsciiValue str(args[0]);
+  int ret = counting_bloom_add(obj->_bloom, *str, str.length());
   return scope.Close(Integer::New(ret));
 }
 
@@ -70,8 +73,8 @@ Handle<Value> NodeCountingBloom::Remove(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = counting_bloom_remove(obj->_bloom, str, strlen(str));
+  String::AsciiValue str(args[0]);
+  int ret = counting_bloom_remove(obj->_bloom, *str, str.length());
   return scope.Close(Integer::New(ret));
 }
 
@@ -84,8 +87,8 @@ Handle<Value> NodeCountingBloom::Check(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect string as first param")));
 
   NodeCountingBloom* obj = ObjectWrap::Unwrap<NodeCountingBloom>(args.This());
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = counting_bloom_check(obj->_bloom, str, strlen(str));
+  String::AsciiValue str(args[0]);
+  int ret = counting_bloom_check(obj->_bloom, *str, str.length());
   return scope.Close(Integer::New(ret));
 }
 
@@ -113,6 +116,7 @@ Handle<Value> NodeCountingBloom::GetErrorRate(Local<String> property, const Acce
 /* NodeScalingBloom */
 void NodeScalingBloom::Init(Handle<Object> target) {
   HandleScope scope;
+
   Local<FunctionTemplate> tpl = FunctionTemplate::New(NewInstance);
   tpl->SetClassName(String::NewSymbol("ScalingBloom"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -128,10 +132,8 @@ void NodeScalingBloom::Init(Handle<Object> target) {
   target->Set(String::NewSymbol("ScalingBloom"), constructor);
 }
 
-NodeScalingBloom::NodeScalingBloom(unsigned int capacity, double error_rate, const char* filename, bool from_file) : node::ObjectWrap() {
-  _bloom = from_file ?
-    new_scaling_bloom_from_file(capacity, error_rate, filename) :
-    new_scaling_bloom(capacity, error_rate, filename);
+NodeScalingBloom::NodeScalingBloom(uint32_t capacity, double error_rate, const char* filename, bool from_file) : node::ObjectWrap() {
+  _bloom = (from_file ?  new_scaling_bloom_from_file(capacity, error_rate, filename) : new_scaling_bloom(capacity, error_rate, filename));
 }
 
 NodeScalingBloom::~NodeScalingBloom() {
@@ -141,11 +143,9 @@ NodeScalingBloom::~NodeScalingBloom() {
 
 Handle<Value> NodeScalingBloom::NewInstance(const Arguments& args) {
   HandleScope scope;
-  NodeScalingBloom* obj;
-  if (args.Length() > 3 && args[3]->IsBoolean())
-    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), args[3]->BooleanValue());
-  else
-    obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *String::AsciiValue(args[2]), false);
+
+  String::AsciiValue str(args[2]);
+  NodeScalingBloom* obj = new NodeScalingBloom(args[0]->Uint32Value(), args[1]->NumberValue(), *str, (args.Length() > 3 && args[3]->IsBoolean() && args[3]->BooleanValue()));
   obj->Wrap(args.This());
   return args.This();
 }
@@ -161,8 +161,8 @@ Handle<Value> NodeScalingBloom::Add(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This());
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = scaling_bloom_add(obj->_bloom, str, strlen(str), args[1]->Uint32Value());
+  String::AsciiValue str(args[0]);
+  int ret = scaling_bloom_add(obj->_bloom, *str, str.length(), args[1]->Uint32Value());
   return scope.Close(Integer::New(ret));
 }
 
@@ -177,8 +177,8 @@ Handle<Value> NodeScalingBloom::Remove(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This()); 
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = scaling_bloom_remove(obj->_bloom, str, strlen(str), args[1]->Uint32Value());
+  String::AsciiValue str(args[0]);
+  int ret = scaling_bloom_remove(obj->_bloom, *str, str.length(), args[1]->Uint32Value());
   return scope.Close(Integer::New(ret));
 }
 
@@ -191,8 +191,8 @@ Handle<Value> NodeScalingBloom::Check(const Arguments& args) {
     return ThrowException(Exception::TypeError(String::New("Expect integer as second param")));
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This());
-  const char* str = *String::AsciiValue(args[0]);
-  int ret = scaling_bloom_check(obj->_bloom, str, strlen(str));
+  String::AsciiValue str(args[0]);
+  int ret = scaling_bloom_check(obj->_bloom, *str, str.length());
   return scope.Close(Integer::New(ret));
 }
 
@@ -200,6 +200,7 @@ Handle<Value> NodeScalingBloom::Flush(const Arguments& args) {
   HandleScope scope;
 
   NodeScalingBloom* obj = ObjectWrap::Unwrap<NodeScalingBloom>(args.This());
+  bitmap_flush(obj->_bloom->bitmap);
   int ret = scaling_bloom_flush(obj->_bloom);
   return scope.Close(Integer::New(ret));
 }

@@ -1,4 +1,3 @@
-#define BUILDING_NODE_EXTENSION
 #include "node_dablooms.h"
 
 using namespace v8;
