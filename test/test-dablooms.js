@@ -5,7 +5,7 @@ describe('Dablooms', function() {
   describe('ScalingBloom', function() {
     var bloom = null;
     before(function() {
-      bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin', 0);
+      bloom = dablooms.createScalingBloom(1000, 0.05, '/tmp/bloom.bin');
     });
     it('should have a valid constructor', function() {
       assert(bloom);
@@ -16,15 +16,17 @@ describe('Dablooms', function() {
     it('should have capacity of 1000', function() {
       assert.equal(bloom.capacity, 1000);
     });
-    it('should be able to add a value', function() {
+    it('should add a value', function() {
       assert.equal(bloom.add('foo', 2), 1);
     });
-    it('check this value membership', function() {
+    it('should check this value membership', function() {
       assert.equal(bloom.check('foo', 2), 1);
-      assert.equal(bloom.check('bar', 2), 0);
+      assert.equal(bloom.check('bar', 2), 0); // false positive ???
     });
-    it('should be able to remove a value', function() {
+    it('should remove a value', function() {
       assert.equal(bloom.remove('foo', 2), 1);
+    });
+    it('should check the removal', function() {
       assert.equal(bloom.check('foo', 2), 0);
     });
     it('should have a size in bytes larger than zero', function() {
