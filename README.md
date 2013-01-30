@@ -1,4 +1,4 @@
-node-dablooms [![Build Status](https://secure.travis-ci.org/tralamazza/node-dablooms.png)](http://travis-ci.org/tralamazza/node-dablooms)
+node-dablooms [![Build Status](https://secure.travis-ci.org/tralamazza/node-dablooms.png)](http://travis-ci.org/tralamazza/node-dablooms) [![endorse](http://api.coderwall.com/tralamazza/endorsecount.png)](http://coderwall.com/tralamazza)
 =============
 
 A nodejs [dablooms](http://github.com/bitly/dablooms) module.
